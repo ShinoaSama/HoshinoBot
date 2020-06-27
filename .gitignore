@@ -24,6 +24,9 @@ kokkoro-OLD/
 # VSCode Folder
 .vscode/
 
+# JetBrains Folder
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

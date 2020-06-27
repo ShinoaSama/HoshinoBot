@@ -22,11 +22,12 @@ setu_APIKEY = '193416775ed3983f2aa954'
 async def setu_api_request():
     params = {'apikey': setu_APIKEY, 'size1200': True}
     resp = await aiorequests.get(setu_get_url, params).json()
+    data = await resp.json()
 
-    if len(resp['data']) == 0:
+    if len(data['data']) == 0:
         return None
 
-    image_data = resp['data'][0]
+    image_data = data['data'][0]
 
     image_pid = image_data['pid']
     image_title = image_data['title']
