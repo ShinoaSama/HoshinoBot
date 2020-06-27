@@ -21,7 +21,7 @@ setu_APIKEY = '193416775ed3983f2aa954'
 
 async def setu_api_request():
     params = {'apikey': setu_APIKEY, 'size1200': True}
-    resp = await aiorequests.get(setu_get_url, params).json()
+    resp = await aiorequests.get(setu_get_url, params)
     data = await resp.json()
 
     if len(data['data']) == 0:
