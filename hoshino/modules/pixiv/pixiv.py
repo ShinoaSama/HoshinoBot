@@ -60,8 +60,10 @@ async def setu(bot: NoneBot, ctx, match):
 
     # conditions all ok, send a setu.
     if match.group().find("r18"):
+        sv.logger.info("Getting an r18 picture...")
         wrapped_message = await setu_api_request(r18=True)
     else:
+        sv.logger.info("Getting an picture...")
         wrapped_message = await setu_api_request()
     try:
         await bot.send(ctx, wrapped_message)
