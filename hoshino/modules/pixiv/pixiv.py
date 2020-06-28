@@ -19,8 +19,10 @@ setu_get_url = "https://api.lolicon.app/setu/"
 setu_APIKEY = '193416775ed3983f2aa954'
 
 
-async def setu_api_request():
+async def setu_api_request(r18=False):
     params = {'apikey': setu_APIKEY, 'size1200': True}
+    if r18:
+        params['r18'] = 1
     resp = await aiorequests.get(setu_get_url, params)
     data = await resp.json()
 
@@ -57,7 +59,10 @@ async def setu(bot: NoneBot, ctx, match):
     _nlmt.increase(uid)
 
     # conditions all ok, send a setu.
-    wrapped_message = await setu_api_request()
+    if match.group().find("r18"):
+        wrapped_message = await setu_api_request(r18=True)
+    else:
+        wrapped_message = await setu_api_request()
     try:
         await bot.send(ctx, wrapped_message)
     except CQHttpError:
