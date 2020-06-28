@@ -16,8 +16,8 @@ def get_db_path(group_id):
         db_name = str(group_id)
     else:
         db_name = "general"
-    print(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', db_name))
-    return db_name
+
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', db_name)
 
 
 @sv.on_rex(re.compile(r'^更新词条#(.*?)#(.*)$', re.S), normalize=True)
