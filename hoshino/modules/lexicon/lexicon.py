@@ -11,13 +11,13 @@ sv = Service('lexicon', manage_priv=Privilege.SUPERUSER, enable_on_default=True,
 
 
 def get_db_path(group_id):
-
     if group_id:
         db_name = str(group_id)
     else:
         db_name = "general"
+    db_name = db_name + ".db"
 
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'db', db_name)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), db_name)
 
 
 @sv.on_rex(re.compile(r'^更新词条#(.*?)#(.*)$', re.S), normalize=True)
@@ -26,6 +26,10 @@ async def keyword_put(bot: NoneBot, ctx, match):
     message_match = re.compile(r'^更新词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
     keyword = message_match.groups()[0]
     content = message_match.groups()[1]
+
+    # 在使用mirai + CQHTTPMirai下, 对content的CQ码进行处理
+    content = re.sub(r"CQ:image,file=\{.*\}.mirai,url=", "CQ:image,file=", content)
+
     group_id = ctx['group_id']
     db_name = get_db_path(group_id)
 
@@ -72,7 +76,6 @@ async def keyword_trigger(bot: NoneBot, ctx, match):
         exist_content = get_value_by_keyword(conn, keyword)
         conn.commit()
         conn.close()
-
 
     except Exception as e:
         sv.logger.info("Exception in handling Database.")
