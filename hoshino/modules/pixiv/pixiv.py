@@ -59,7 +59,7 @@ async def setu(bot: NoneBot, ctx, match):
     _nlmt.increase(uid)
 
     # conditions all ok, send a setu.
-    if match.group().find("r18"):
+    if match.group().find("r18") >= 0:
         sv.logger.info("Getting an r18 picture...")
         wrapped_message = await setu_api_request(r18=True)
     else:
