@@ -1,13 +1,12 @@
 import sqlite3
 import os
 import re
-import ujson
 
-from nonebot import on_command, CommandSession, MessageSegment, NoneBot
-from nonebot import aiocqhttp
+from nonebot import get_bot, NoneBot
 from hoshino import Service, Privilege
 
 sv = Service('lexicon', manage_priv=Privilege.SUPERUSER, enable_on_default=True, visible=False)
+global_bot = get_bot()
 
 
 def get_db_path(group_id):
@@ -22,7 +21,8 @@ def get_db_path(group_id):
 
 @sv.on_rex(re.compile(r'^更新词条#(.*?)#(.*)$', re.S), normalize=True)
 async def keyword_put(bot: NoneBot, ctx, match):
-    # match可能会丢失一些信息, 故不采用
+
+    # match丢失了一些信息, 故不采用
     message_match = re.compile(r'^更新词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
     keyword = message_match.groups()[0]
     content = message_match.groups()[1]
@@ -54,21 +54,17 @@ async def keyword_put(bot: NoneBot, ctx, match):
         sv.logger.info("Update the keyword-content pair successfully.")
 
     except Exception as e:
-        sv.logger.info("Exception in handling Database.")
-        print(e)
+        sv.logger.info("Exception in handling Database: " + str(e))
         await bot.send(ctx, '更新词条失败...', at_sender=True)
 
     await bot.send(ctx, '更新词条成功!', at_sender=True)
 
 
-@sv.on_rex(re.compile(r'^查看词条#(.*)$'), normalize=True)
-async def keyword_trigger(bot: NoneBot, ctx, match):
-    keyword = match.groups()[0]
-    group_id = ctx['group_id']
+@global_bot.on_message('group')
+async def keyword_trigger(context):
+    group_id = context['group_id']
+    keyword = str(context['message'])
     db_name = get_db_path(group_id)
-
-    sv.logger.info("db_name: " + db_name)
-    sv.logger.info("keyword: " + keyword)
 
     try:
         conn = sqlite3.connect(db_name)
@@ -78,14 +74,16 @@ async def keyword_trigger(bot: NoneBot, ctx, match):
         conn.close()
 
     except Exception as e:
-        sv.logger.info("Exception in handling Database.")
-        print(e)
+        sv.logger.info("Exception in handling Database: " + str(e))
+        return
 
     if exist_content is not None:
+        sv.logger.info("db_name: " + db_name)
+        sv.logger.info("keyword: " + keyword)
         sv.logger.info("The content in database is: " + exist_content)
-        await bot.send(ctx, exist_content, at_sender=False)
+        await global_bot.send(context, exist_content)
     else:
-        await bot.send(ctx, "未能找到该词条", at_sender=False)
+        await global_bot.send(context, "未能找到该词条")
 
 
 @sv.on_rex(re.compile(r'^删除词条#(.*)$'), normalize=True)
@@ -110,8 +108,7 @@ async def delete_keyword_trigger(bot: NoneBot, ctx, match):
         sv.logger.info("Delete the keyword-content pair successfully.")
 
     except Exception as e:
-        sv.logger.info("Exception in handling Database.")
-        print(e)
+        sv.logger.info("Exception in handling Database: " + str(e))
         await bot.send(ctx, '删除词条失败...', at_sender=True)
 
     await bot.send(ctx, '删除词条成功!', at_sender=True)
