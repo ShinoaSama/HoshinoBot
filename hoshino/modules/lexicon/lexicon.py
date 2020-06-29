@@ -82,8 +82,6 @@ async def keyword_trigger(context):
         sv.logger.info("keyword: " + keyword)
         sv.logger.info("The content in database is: " + exist_content)
         await global_bot.send(context, exist_content)
-    else:
-        await global_bot.send(context, "未能找到该词条")
 
 
 @sv.on_rex(re.compile(r'^删除词条#(.*)$'), normalize=True)
