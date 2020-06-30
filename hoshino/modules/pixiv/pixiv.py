@@ -45,7 +45,7 @@ async def setu_api_request(r18=False):
     return wrapped_message
 
 
-@sv.on_rex(re.compile(r'不够[涩瑟色]|[涩瑟色]图|来一?[点份张].*[涩瑟色]|再来[点份张]|看过了|铜'), normalize=True)
+@sv.on_rex(re.compile(r'^(不够[涩瑟色]|[涩瑟色]图|来一?[点份张].*[涩瑟色]|再来[点份张]|看过了|铜)$'), normalize=True)
 async def setu(bot: NoneBot, ctx, match):
     """随机叫一份涩图，对每个用户有冷却时间"""
     uid = ctx['user_id']
