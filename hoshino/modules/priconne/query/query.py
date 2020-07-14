@@ -82,11 +82,11 @@ BCR_SITES = f'''
 @sv.on_command('pcr-sites', aliases=('pcr速查', 'pcr图书馆', 'pcr圖書館', '图书馆', '圖書館'))
 async def pcr_sites(session:CommandSession):
     await session.send(PCR_SITES, at_sender=True)
-    await util.silence(session.ctx, 60)
+    # await util.silence(session.ctx, 60)
 @sv.on_command('bcr-sites', aliases=('bcr速查', 'bcr攻略'))
 async def bcr_sites(session:CommandSession):
     await session.send(BCR_SITES, at_sender=True)
-    await util.silence(session.ctx, 60)
+    # await util.silence(session.ctx, 60)
 
 
 YUKARI_SHEET_ALIAS = map(lambda x: ''.join(x), itertools.product(('黄骑', '酒鬼', '黃騎'), ('充电', '充电表', '充能', '充能表')))
@@ -100,7 +100,7 @@ YUKARI_SHEET = f'''
 @sv.on_command('yukari-sheet', aliases=YUKARI_SHEET_ALIAS)
 async def yukari_sheet(session:CommandSession):
     await session.send(YUKARI_SHEET, at_sender=True)
-    await util.silence(session.ctx, 60)
+    # await util.silence(session.ctx, 60)
 
 
 DRAGON_TOOL = f'''
@@ -111,4 +111,4 @@ DRAGON_TOOL = f'''
 @sv.on_command('拼音接龙', aliases=('一个顶俩', '韵母接龙'))
 async def dragon(session:CommandSession):
     await session.send(DRAGON_TOOL, at_sender=True)
-    await util.silence(session.ctx, 60)
+    # await util.silence(session.ctx, 60)
