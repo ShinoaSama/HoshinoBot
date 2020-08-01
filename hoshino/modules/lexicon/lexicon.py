@@ -26,6 +26,8 @@ async def keyword_put(bot: NoneBot, ctx, match):
     message_match = re.compile(r'^更新词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
     keyword = message_match.groups()[0]
     content = message_match.groups()[1]
+    content = content.strip()
+
 
     # 在使用mirai + CQHTTPMirai下, 对content的CQ码进行处理
     content = re.sub(r"CQ:image,file=\{.*\}.mirai,url=", "CQ:image,file=", content)

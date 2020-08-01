@@ -25,6 +25,7 @@ async def keyword_put(bot: NoneBot, ctx, match):
     message_match = re.compile(r'^更新随机词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
     keyword = message_match.groups()[0]
     content = message_match.groups()[1]
+    content = content.strip()
 
     # 在使用mirai + CQHTTPMirai下, 对content的CQ码进行处理
     content = re.sub(r"CQ:image,file=\{.*\}.mirai,url=", "CQ:image,file=", content)
@@ -87,6 +88,7 @@ async def delete_keyword_trigger(bot: NoneBot, ctx, match):
     message_match = re.compile(r'^删除随机词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
     keyword = message_match.groups()[0]
     content = message_match.groups()[1]
+    content = content.strip()
 
     # 在使用mirai + CQHTTPMirai下, 对content的CQ码进行处理
     content = re.sub(r"CQ:image,file=\{.*\}.mirai,url=", "CQ:image,file=", content)
@@ -138,31 +140,29 @@ def get_value_by_keyword(conn, keyword):
 
 def delete_key_value_pair(conn, keyword, content):
     c = conn.cursor()
-    pre_search_cmd = '''
-        SELECT *
-        FROM Dict
-        WHERE keyword='%s' AND content='%s'
+    delete_cmd = '''
+        DELETE FROM Dict
+        WHERE keyword='%s' AND content='%s' 
     ''' % (keyword, content)
-    cursor = c.execute(pre_search_cmd)
-    result = cursor.fetchone()
+    c.execute(delete_cmd)
 
-    # check if there exists a same key-value pair.
-    # if exists, delete it.
-    if result is not None:
-        delete_cmd = '''
-            DELETE FROM Dict
-            WHERE keyword='%s' AND content='%s' 
-        ''' % (keyword, content)
-        c.execute(delete_cmd)
+
+def clear_key_value_pairs(conn, keyword):
+    c = conn.cursor()
+    delete_cmd = '''
+        DELETE FROM Dict
+        WHERE keyword='%s'
+    ''' % keyword
+    c.execute(delete_cmd)
 
 
 def put_keyword(conn, keyword, content):
     c = conn.cursor()
     pre_search_cmd = '''
-            SELECT *
-            FROM Dict
-            WHERE keyword='%s' AND content='%s'
-        ''' % (keyword, content)
+        SELECT *
+        FROM Dict
+        WHERE keyword='%s' AND content='%s'
+    ''' % (keyword, content)
     cursor = c.execute(pre_search_cmd)
     result = cursor.fetchone()
 
