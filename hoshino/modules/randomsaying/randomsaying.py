@@ -83,6 +83,32 @@ async def keyword_trigger(context):
     await global_bot.send(context, exist_content[selected_index][0])
 
 
+@sv.on_rex(re.compile(r'^清空随机词条#(.*)$'), normalize=True)
+async def clear_keyword_trigger(bot: NoneBot, ctx, match):
+
+    if ctx['user_id'] != 729147133:
+        await bot.send(ctx, '权限不足!', at_sender=True)
+        return
+
+    keyword = match.groups()[0]
+    group_id = ctx['group_id']
+    db_name = get_db_path(group_id)
+
+    try:
+        conn = sqlite3.connect(db_name)
+        pre_create_db(conn)
+        clear_key_value_pairs(conn, keyword)
+        conn.commit()
+        conn.close()
+        sv.logger.info("clear the keyword-content pairs successfully.")
+
+    except Exception as e:
+        sv.logger.info("Exception in handling Database: " + str(e))
+        await bot.send(ctx, '清空随机词条失败...', at_sender=True)
+
+    await bot.send(ctx, '清空随机词条成功!', at_sender=True)
+
+
 @sv.on_rex(re.compile(r'^删除随机词条#(.*?)#(.*)$'), normalize=True)
 async def delete_keyword_trigger(bot: NoneBot, ctx, match):
     message_match = re.compile(r'^删除随机词条#(.*?)#(.*)$', re.S).match(str(ctx['message']))
