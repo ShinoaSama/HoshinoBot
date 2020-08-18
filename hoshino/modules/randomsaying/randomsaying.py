@@ -86,7 +86,7 @@ async def keyword_trigger(context):
 @sv.on_rex(re.compile(r'^清空随机词条#(.*)$'), normalize=True)
 async def clear_keyword_trigger(bot: NoneBot, ctx, match):
 
-    if ctx['user_id'] != 729147133:
+    if ctx['user_id'] not in bot.config.SUPERUSERS:
         await bot.send(ctx, '权限不足!', at_sender=True)
         return
 
